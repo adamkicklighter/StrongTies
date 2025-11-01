@@ -27,7 +27,7 @@ strongties/
 │   └── utils.py
 │   └── generate_sample_connections.py
 │
-├── results/
+├── results/ -- Results are not tracked (.gitignore)
 │   ├── figures/
 │   │   ├── network_overview.png
 │   │   └── cluster_analysis.png
