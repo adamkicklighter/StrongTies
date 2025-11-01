@@ -7,7 +7,7 @@ StrongTies is a **noncommercial, source-available application** that gives job s
 - Which of your second-degree contacts are within reach via warm introductions  
 - How clusters of connections overlap to create stronger paths for outreach  
 
-Networking becomes less about hoping and more about *knowing*. With StrongTies you get actionable insight into who to connect with — and how to do it in a way that supports your goals, while honoring your network.
+Networking becomes less about hoping and more about strategy. With StrongTies you get actionable insight into who to connect with — and how to do it in a way that supports your goals, while honoring your network.
 
 ---
 
