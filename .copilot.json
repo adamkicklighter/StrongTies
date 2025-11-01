@@ -1,0 +1,23 @@
+{
+  "intention": "StrongTies analyzes user-provided LinkedIn-style CSVs to build a professional social graph and identify high-potential introduction paths.",
+  "privacy": "Process all data locally; do not upload or scrape external data sources.",
+  "preferred_technologies": {
+    "primary": ["python", "pandas", "networkx", "matplotlib", "pytest", "faker"],
+    "secondary": [
+      "plotly", "dash", "altair", "igraph", "polars", "numpy", "scipy"
+    ],
+    "note": "Copilot may suggest other appropriate open-source libraries if they enhance clarity, efficiency, or user experience."
+  },
+  "openness": "Copilot is encouraged to use any transparent, locally-executable, open-source technology that aligns with the project’s noncommercial, privacy-preserving goals.",
+  "outputs": ["ranked_connections.csv", "introduction_paths.csv", "visualizations/"],
+  "license": "Polyform Noncommercial 1.0.0",
+  "constraints": [
+    "No network scraping or API calls to third-party platforms",
+    "No external PII transmission",
+    "Keep functionality local and explainable"
+  ],
+  "style": {
+    "docstrings": "use numpy or google style",
+    "types": "include Python typing annotations when practical"
+  }
+}

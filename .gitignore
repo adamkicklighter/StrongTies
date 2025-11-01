@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# user data
+raw_data/
+uploads/
+*.csv
+results/
