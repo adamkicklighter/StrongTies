@@ -1,5 +1,4 @@
 # SPDX-License-Identifier: Polyform-Noncommercial-1.0.0
-# Copyright (c) 2025 Adam Kicklighter
 
 """
 generate_sample_connections.py
