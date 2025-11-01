@@ -1,7 +1,7 @@
 # StrongTies – A Networking Insights Tool
 **Find the people in your network who can open doors — and the ones you can help in return.**
 
-StrongTies is a **noncommercial, source-available application** that gives job seekers and professionals insight into their LinkedIn connection network. By importing your connections (names, titles, and companies only; no emails or messages), the tool builds a social graph of your first- and second-degree contacts and uses network-analysis methods to identify:
+StrongTies is a **noncommercial, source-available application** that gives job seekers and professionals insight into their LinkedIn connection network. By importing your connections (names, companies, and positions only; no emails or messages), the tool builds a social graph of your first- and second-degree contacts and uses network-analysis methods to identify:
 
 - Which of your direct contacts are positioned to introduce you to your target companies  
 - Which of your second-degree contacts are within reach via warm introductions  
@@ -17,7 +17,7 @@ Traditional networking advice often leaves you asking: "Who should I reach out t
 ---
 
 ## How It Works
-1. **Export Connection Data** – Export your LinkedIn connections, providing name + company fields only.  
+1. **Export Connection Data** – Export your LinkedIn connections, providing name, company, and position fields only.  
 2. **Graph Construction** – StrongTies builds a network graph: people are vertices; relationships are edges.  
 3. **Analysis Metrics** – The tool calculates centrality measures (e.g., betweenness, closeness) and community structure to detect strong introduction paths.  
 4. **Insight Output** – You receive a ranked list of high-potential connections and optional visualizations of your network.  
