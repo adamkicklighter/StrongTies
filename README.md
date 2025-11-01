@@ -31,7 +31,7 @@ We’re seeking contributors, testers, and volunteer pairs to pilot StrongTies:
 - You’re looking for your next opportunity (or supporting someone who is).  
 - You’re willing to provide feedback on the tool’s usability and results.
 
-To join, create an issue or pull request here on GitHub, or reach out via [contact details]. Let’s build a tool that makes networking clearer, fairer, and more human.
+To join, create an issue or pull request here on GitHub, or reach out via `strongties.networking@gmail.com`. Let’s build a tool that makes networking clearer, fairer, and more human.
 
 ---
 
