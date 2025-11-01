@@ -34,6 +34,7 @@ strongties/
 │   ├── reports/
 │   │   ├── top_connectors.csv
 │   │   └── introduction_paths.csv
+        └── cleaned_connections.csv
 │   └── README.md
 │
 ├── tests/
