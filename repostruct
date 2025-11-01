@@ -25,6 +25,7 @@ strongties/
 │   ├── visualization.py
 │   ├── privacy_sanitizer.py
 │   └── utils.py
+│   └── generate_sample_connections.py
 │
 ├── results/
 │   ├── figures/
