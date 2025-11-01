@@ -40,10 +40,12 @@ def load_connections(csv_path: str, base_dir: Optional[str] = None) -> pd.DataFr
     """
     if base_dir and not is_safe_path(base_dir, csv_path):
         raise ValueError(f"Unsafe path detected: {csv_path}")
-    df = pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path, skipinitialspace=True)  # <-- Fix 1
     # Basic cleaning: drop duplicates, standardize column names
     df = df.drop_duplicates()
     df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
+    if "email" in df.columns:
+        df["email"] = df["email"].str.strip()  # <-- Fix 2
     return df
 
 def load_all_connections(data_dir: str) -> pd.DataFrame:
