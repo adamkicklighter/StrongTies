@@ -4,8 +4,8 @@ This folder contains sample connection data for the StrongTies project.
 
 ## Contents
 
-- `sample_connections_1.csv`  
-- `sample_connections_2.csv`  
+- `alice_connections.csv`  
+- `bob_connections.csv`  
   These files are **synthetic datasets** generated locally using `src/generate_sample_connections.py`.  
   No real user data or external sources are included.
 

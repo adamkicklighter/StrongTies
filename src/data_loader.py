@@ -48,9 +48,37 @@ def load_connections(csv_path: str, base_dir: Optional[str] = None) -> pd.DataFr
         df["email"] = df["email"].str.strip()  # <-- Fix 2
     return df
 
+def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None) -> pd.DataFrame:
+    """
+    Load a single connections CSV file, with path validation and user tagging.
+
+    Parameters
+    ----------
+    csv_path : str
+        Path to the CSV file.
+    user_id : str
+        Identifier for the user whose connections are in the CSV.
+    base_dir : Optional[str]
+        Base directory to validate the path against.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the connections data, with a user_id column.
+    """
+    if base_dir and not is_safe_path(base_dir, csv_path):
+        raise ValueError(f"Unsafe path detected: {csv_path}")
+    df = pd.read_csv(csv_path, skipinitialspace=True)
+    df = df.drop_duplicates()
+    df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
+    if "email" in df.columns:
+        df["email"] = df["email"].str.strip()
+    df["user_id"] = user_id  # <-- Add user_id column
+    return df
+
 def load_all_connections(data_dir: str) -> pd.DataFrame:
     """
-    Load and concatenate all connection CSVs in a directory, with path validation.
+    Load and concatenate all connection CSVs in a directory, tagging each with its user.
 
     Parameters
     ----------
@@ -60,7 +88,7 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        Combined DataFrame of all connections.
+        Combined DataFrame of all connections, with user_id column.
     """
     abs_data_dir = os.path.abspath(data_dir)
     csv_files = [
@@ -68,9 +96,13 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
         for f in os.listdir(abs_data_dir)
         if f.endswith('.csv')
     ]
-    # Validate each file path
     safe_csv_files = [f for f in csv_files if is_safe_path(abs_data_dir, f)]
-    dfs: List[pd.DataFrame] = [load_connections(f, abs_data_dir) for f in safe_csv_files]
+    dfs: List[pd.DataFrame] = []
+    for f in safe_csv_files:
+        # Infer user_id from filename, e.g., "alice_connections.csv" -> "alice"
+        basename = os.path.basename(f)
+        user_id = basename.split('_')[0]
+        dfs.append(load_connections(f, user_id, abs_data_dir))
     if dfs:
         combined_df = pd.concat(dfs, ignore_index=True)
         combined_df = combined_df.drop_duplicates()

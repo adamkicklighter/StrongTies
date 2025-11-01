@@ -59,12 +59,13 @@ def main():
     df1 = generate_synthetic_connections(50, seed=42)
     df2 = generate_synthetic_connections(50, seed=99)
 
-    df1.to_csv("data/sample_connections_1.csv", index=False)
-    df2.to_csv("data/sample_connections_2.csv", index=False)
+    # Use user IDs in filenames for compatibility with data_loader.py
+    df1.to_csv("data/alice_connections.csv", index=False)
+    df2.to_csv("data/bob_connections.csv", index=False)
 
     print("✅ Synthetic connection files created:")
-    print(" - data/sample_connections_1.csv")
-    print(" - data/sample_connections_2.csv")
+    print(" - data/alice_connections.csv")
+    print(" - data/bob_connections.csv")
 
 if __name__ == "__main__":
     main()
