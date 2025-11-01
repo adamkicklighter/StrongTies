@@ -12,7 +12,7 @@ Networking becomes less about hoping and more about strategy. With StrongTies yo
 ---
 
 ## Why StrongTies Matters
-Traditional networking advice often leaves you asking: *Who should I reach out to? Through whom?* StrongTies takes the guesswork out of that process. Based on social-network theory and real data, it highlights where opportunity lives in your network, so you can spend time where it counts.
+Traditional networking advice often leaves you asking: "Who should I reach out to? Through whom?" StrongTies takes the guesswork out of that process. Based on social-network theory and real data, it highlights where opportunity lives in your network, so you can spend time where it counts.
 
 ---
 
