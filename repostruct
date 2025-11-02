@@ -20,6 +20,7 @@ strongties/
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py
+│   ├── target_preferences.py
 │   ├── graph_builder.py
 │   ├── network_metrics.py
 │   ├── visualization.py
