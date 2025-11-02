@@ -14,8 +14,11 @@ Functions:
 import os
 from typing import List, Optional
 import pandas as pd
-from privacy_sanitizer import sanitize_csv
-from utils import clean_company_name, standardize_position_title
+from privacy_sanitizer import sanitize_csv, validate_csv_columns
+from utils import clean_company_name, standardize_position_title, ensure_dir
+import logging
+
+logger = logging.getLogger("strongties")
 
 def is_safe_path(base_dir: str, path: str) -> bool:
     """
@@ -25,7 +28,13 @@ def is_safe_path(base_dir: str, path: str) -> bool:
     abs_path = os.path.abspath(path)
     return abs_path.startswith(abs_base)
 
-def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None) -> pd.DataFrame:
+def load_connections(
+    csv_path: str,
+    user_id: str,
+    base_dir: Optional[str] = None,
+    hash_ids: bool = False,
+    obfuscate_names: bool = False
+) -> pd.DataFrame:
     """
     Load a single connections CSV file, with path validation, privacy sanitization, and user tagging.
 
@@ -37,6 +46,10 @@ def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None
         Identifier for the user whose connections are in the CSV.
     base_dir : Optional[str]
         Base directory to validate the path against.
+    hash_ids : bool, optional
+        If True, hash identifiers for anonymization.
+    obfuscate_names : bool, optional
+        If True, replace names with synthetic placeholders.
 
     Returns
     -------
@@ -44,9 +57,13 @@ def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None
         DataFrame containing the sanitized connections data, with a user_id column.
     """
     if base_dir and not is_safe_path(base_dir, csv_path):
+        logger.error(f"Unsafe path detected: {csv_path}")
         raise ValueError(f"Unsafe path detected: {csv_path}")
     df = pd.read_csv(csv_path, skipinitialspace=True)
-    df = sanitize_csv(df)  # Ensure privacy and allowed columns
+    if not validate_csv_columns(df.columns.tolist()):
+        logger.error(f"CSV columns invalid: {df.columns.tolist()}")
+        raise ValueError(f"CSV columns invalid: {df.columns.tolist()}")
+    df = sanitize_csv(df, hash_ids=hash_ids, obfuscate_names=obfuscate_names)
     df = df.drop_duplicates()
     # Standardize company and position columns
     if "Company" in df.columns:
@@ -62,9 +79,15 @@ def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None
     other_cols = [col for col in df.columns if col not in desired_order]
     df = df[desired_order + other_cols]
     df["user_id"] = user_id
+    # Lowercase all column names
+    df.columns = [col.lower() for col in df.columns]
     return df
 
-def load_all_connections(data_dir: str) -> pd.DataFrame:
+def load_all_connections(
+    data_dir: str,
+    hash_ids: bool = False,
+    obfuscate_names: bool = False
+) -> pd.DataFrame:
     """
     Load and concatenate all connection CSVs in a directory, tagging each with its user.
 
@@ -72,6 +95,10 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
     ----------
     data_dir : str
         Directory containing CSV files.
+    hash_ids : bool, optional
+        If True, hash identifiers for anonymization.
+    obfuscate_names : bool, optional
+        If True, replace names with synthetic placeholders.
 
     Returns
     -------
@@ -79,6 +106,7 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
         Combined DataFrame of all connections, with user_id column.
     """
     abs_data_dir = os.path.abspath(data_dir)
+    ensure_dir(abs_data_dir)
     csv_files = [
         os.path.join(abs_data_dir, f)
         for f in os.listdir(abs_data_dir)
@@ -90,7 +118,7 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
         # Infer user_id from filename, e.g., "alice_connections.csv" -> "alice"
         basename = os.path.basename(f)
         user_id = basename.split('_')[0]
-        dfs.append(load_connections(f, user_id, abs_data_dir))
+        dfs.append(load_connections(f, user_id, abs_data_dir, hash_ids=hash_ids, obfuscate_names=obfuscate_names))
     if dfs:
         combined_df = pd.concat(dfs, ignore_index=True)
         combined_df = combined_df.drop_duplicates()
@@ -100,6 +128,6 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
 
 # Example usage (uncomment for script use):
 if __name__ == "__main__":
-    df = load_all_connections("../StrongTies/data")
+    df = load_all_connections("../StrongTies/data", hash_ids=False, obfuscate_names=False)
     print(df.head())
     print(df.tail())

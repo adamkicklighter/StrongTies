@@ -54,7 +54,7 @@ def sanitize_csv(
 
     # Hash identifiers if requested
     if hash_ids:
-        df["UserID"] = df.apply(lambda row: _hash_identifier(row["First Name"], row["Last Name"], row["Company"]), axis=1)
+        df["hash_id"] = df.apply(lambda row: _hash_identifier(row["First Name"], row["Last Name"], row["Company"]), axis=1)
 
     # Obfuscate names if requested
     if obfuscate_names:
