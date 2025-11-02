@@ -33,6 +33,7 @@ StrongTies works best when used by groups of two or more first-degree connection
 
 6. **Take Action Together**
    - Coordinate outreach: ask your trusted connections for introductions, offer to make introductions for others, and support each other's job search.
+   - StrongTies does not intend for users to reach out to suggested connections without their small group's support. Users should ensure mutual respect of each other's first-degree connections when coordinating outreach.
 
 ## Ethical Principles
 
