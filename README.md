@@ -11,6 +11,27 @@ Networking becomes less about hoping and more about strategy. With StrongTies yo
 
 ---
 
+## Features
+
+### Currently Available
+- **Local Data Analysis:** Upload your LinkedIn-style CSV files (names, companies, positions only) and analyze your connections directly in your browser.  
+- **Privacy-Preserving:** All processing happens locally; no data is uploaded or shared externally.  
+- **User-Friendly Interface:** Streamlit-powered app with a clean, modern design for easy data upload and exploration.  
+- **Connection Overview:** Instantly view and explore your imported connections in a sortable, filterable table.  
+- **Identifier Selection:** Analyze your network by selecting your user identifier from uploaded files.  
+- **Error Handling:** Clear feedback for successful uploads and helpful error messages for issues.
+
+### Coming Soon
+- **Network Graph Construction:** Visualize your professional social graph, showing how you and your contacts are connected.  
+- **Advanced Metrics:** Centrality measures (betweenness, closeness, etc.) and community detection to highlight key connectors and clusters.  
+- **Introduction Path Analysis:** Discover optimal paths for warm introductions to second-degree contacts and target companies.  
+- **Visual Insights:** Interactive network diagrams and cluster visualizations.  
+- **Group Collaboration:** Combine multiple users' networks for richer analysis and mutual support.  
+- **Exportable Reports:** Download ranked lists of connectors and suggested introduction paths.  
+- **Expanded Documentation:** In-app help, privacy details, and ethical guidelines.
+
+---
+
 ## Why StrongTies Matters
 Traditional networking advice often leaves you asking: "Who should I reach out to? Through whom?" StrongTies takes the guesswork out of that process. Based on social-network theory and real data, it highlights where opportunity lives in your network, so you can spend time where it counts.
 
