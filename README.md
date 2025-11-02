@@ -27,6 +27,12 @@ Traditional networking advice often leaves you asking: "Who should I reach out t
 
 ---
 
+## User Guide
+
+For detailed instructions, ethical principles, and best practices, please see the [StrongTies User Guide](./user-guide.md).
+
+---
+
 ## Get Involved
 We’re seeking contributors, testers, and volunteer pairs to pilot StrongTies:  
 - You have a LinkedIn connection export and are open to mapping your network.  
