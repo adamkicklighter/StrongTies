@@ -29,6 +29,7 @@ strongties/
 │   └── generate_sample_connections.py
 │
 ├── app/
+│   ├── app.py
 │
 ├── results/ -- Results are not tracked (.gitignore)
 │   ├── figures/
