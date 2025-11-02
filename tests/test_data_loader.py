@@ -20,31 +20,110 @@ def test_is_safe_path(tmp_path):
 
 def test_load_connections_valid(tmp_path):
     csv_file = tmp_path / "connections.csv"
-    csv_file.write_text("Name, Email\nAlice, alice@example.com\nBob, bob@example.com\nAlice, alice@example.com")
-    df = load_connections(str(csv_file), "testuser", str(tmp_path))  # Add user_id argument
-    assert set(df.columns) == {"name", "email", "user_id"}  # user_id column expected
+    csv_file.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Alice,Smith,Acme Inc,Engineer\n"
+        "Bob,Jones,Acme Inc,Manager\n"
+        "Alice,Smith,Acme Inc,Engineer"
+    )
+    df = load_connections(str(csv_file), "testuser", str(tmp_path))
+    assert set(df.columns) == {"name", "company", "position", "user_id"}
     assert len(df) == 2  # duplicates dropped
-    assert "alice@example.com" in df["email"].values
+    assert "alice smith" in df["name"].values
     assert all(df["user_id"] == "testuser")
 
 def test_load_connections_invalid_path(tmp_path):
     csv_file = tmp_path.parent / "unsafe.csv"
-    csv_file.write_text("Name, Email\nCharlie, charlie@example.com")
+    csv_file.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Charlie,Brown,Peanuts,Friend"
+    )
     with pytest.raises(ValueError):
-        load_connections(str(csv_file), "testuser", str(tmp_path))  # Add user_id argument
+        load_connections(str(csv_file), "testuser", str(tmp_path))
 
 def test_load_all_connections(tmp_path):
     csv1 = tmp_path / "alice_connections.csv"
     csv2 = tmp_path / "bob_connections.csv"
-    csv1.write_text("Name, Email\nAlice, alice@example.com\nBob, bob@example.com")
-    csv2.write_text("Name, Email\nBob, bob@example.com\nCarol, carol@example.com")
+    csv1.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Alice,Smith,Acme Inc,Engineer\n"
+        "Bob,Jones,Acme Inc,Manager"
+    )
+    csv2.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Bob,Jones,Acme Inc,Manager\n"
+        "Carol,White,Acme Inc,Designer"
+    )
     df = load_all_connections(str(tmp_path))
-    assert set(df.columns) == {"name", "email", "user_id"}  # user_id column expected
+    assert set(df.columns) == {"name", "company", "position", "user_id"}
     assert len(df) == 3  # Bob is duplicate
-    assert sorted(df["name"].values) == ["Alice", "Bob", "Carol"]
-    assert set(df["user_id"].values) == {"alice", "bob"}  # user_id inferred from filename
+    assert sorted(df["name"].values) == ["alice smith", "bob jones", "carol white"]
+    assert set(df["user_id"].values) == {"alice", "bob"}
 
 def test_load_all_connections_empty(tmp_path):
     df = load_all_connections(str(tmp_path))
     assert isinstance(df, pd.DataFrame)
     assert df.empty
+
+def test_load_connections_hash_and_obfuscate(tmp_path, monkeypatch):
+    # Mock sanitize_csv to check that hash_ids and obfuscate_names are passed
+    called = {}
+    def mock_sanitize_csv(df, hash_ids=False, obfuscate_names=False):
+        called['hash_ids'] = hash_ids
+        called['obfuscate_names'] = obfuscate_names
+        return df
+    monkeypatch.setattr("data_loader.sanitize_csv", mock_sanitize_csv)
+    csv_file = tmp_path / "connections.csv"
+    csv_file.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Alice,Smith,Acme Inc,Engineer"
+    )
+    load_connections(str(csv_file), "testuser", str(tmp_path), hash_ids=True, obfuscate_names=True)
+    assert called['hash_ids'] is True
+    assert called['obfuscate_names'] is True
+
+def test_load_connections_standardization(tmp_path, monkeypatch):
+    # Mock company and position cleaners
+    monkeypatch.setattr("data_loader.clean_company_name", lambda x: "StandardCo")
+    monkeypatch.setattr("data_loader.standardize_position_title", lambda x: "StandardTitle")
+    csv_file = tmp_path / "connections.csv"
+    csv_file.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Alice,Smith,Acme Inc,Engineer"
+    )
+    df = load_connections(str(csv_file), "testuser", str(tmp_path))
+    assert df["company"].iloc[0] == "StandardCo"
+    assert df["position"].iloc[0] == "StandardTitle"
+
+def test_load_connections_malformed_csv(tmp_path):
+    # Missing required columns
+    csv_file = tmp_path / "bad.csv"
+    csv_file.write_text(
+        "First Name,Company\n"
+        "Alice,Acme Inc"
+    )
+    with pytest.raises(ValueError):
+        load_connections(str(csv_file), "testuser", str(tmp_path))
+
+def test_load_all_connections_ignores_non_csv(tmp_path):
+    csv_file = tmp_path / "alice_connections.csv"
+    txt_file = tmp_path / "bob_connections.txt"
+    csv_file.write_text(
+        "First Name,Last Name,Company,Position\n"
+        "Alice,Smith,Acme Inc,Engineer"
+    )
+    txt_file.write_text("Not a CSV")
+    df = load_all_connections(str(tmp_path))
+    assert "alice smith" in df["name"].values
+    assert "bob_connections.txt" not in df["name"].values
+
+def test_load_connections_logging(tmp_path, caplog):
+    csv_file = tmp_path / "bad.csv"
+    csv_file.write_text(
+        "First Name,Company\n"
+        "Alice,Acme Inc"
+    )
+    with caplog.at_level("ERROR"):
+        with pytest.raises(ValueError):
+            load_connections(str(csv_file), "testuser", str(tmp_path))
+        assert any("CSV columns invalid" in m for m in caplog.messages)

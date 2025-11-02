@@ -127,7 +127,7 @@ def load_all_connections(
         return pd.DataFrame()
 
 # Example usage (uncomment for script use):
-if __name__ == "__main__":
-    df = load_all_connections("../StrongTies/data", hash_ids=False, obfuscate_names=False)
-    print(df.head())
-    print(df.tail())
+# if __name__ == "__main__":
+#     df = load_all_connections("../StrongTies/data", hash_ids=False, obfuscate_names=False)
+#     print(df.head())
+#     print(df.tail())
