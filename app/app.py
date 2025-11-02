@@ -149,46 +149,72 @@ def main():
     
     with col1:
         st.markdown("### 📁 Upload Your Data")
-        st.markdown("Get started by uploading your LinkedIn connections CSV file.")
-        
-        uploaded_file = st.file_uploader(
-            "Choose your LinkedIn connections CSV",
+        st.markdown("Upload one or more LinkedIn connections CSV files (e.g., alice_connections.csv, bob_connections.csv).")
+
+        uploaded_files = st.file_uploader(
+            "Choose your LinkedIn connections CSV files",
             type="csv",
-            help="Export your connections from LinkedIn and upload the CSV file here"
+            accept_multiple_files=True,
+            help="Upload CSVs named like alice_connections.csv, bob_connections.csv"
         )
-        
-        user_id = st.text_input(
-            "Your Identifier",
-            value="",
-            placeholder="Enter your name or email",
-            help="This helps identify you in the network graph"
-        )
-        
-        if uploaded_file is not None and user_id:
+
+        user_id = None
+        available_users = []
+
+        if uploaded_files:
+            # Extract user identifiers from file name prefixes
+            for file in uploaded_files:
+                filename = file.name
+                if filename.endswith("_connections.csv"):
+                    prefix = filename.replace("_connections.csv", "")
+                    available_users.append(prefix)
+                elif filename.endswith(".csv"):
+                    prefix = filename.replace(".csv", "")
+                    available_users.append(prefix)
+            available_users = list(set(available_users))  # Remove duplicates
+
+            if available_users:
+                user_id = st.selectbox(
+                    "Your Identifier",
+                    options=available_users,
+                    help="Select your identifier (from file name prefix) to analyze your network"
+                )
+
+        if uploaded_files and user_id:
             st.markdown("")  # spacing
             if st.button("🚀 Analyze Network", use_container_width=True):
                 with st.spinner("Processing your network..."):
                     try:
-                        temp_path = os.path.join("temp_uploaded.csv")
-                        with open(temp_path, "wb") as f:
-                            f.write(uploaded_file.getbuffer())
-                        df = load_connections(temp_path, user_id)
-                        
-                        st.success(f"✅ Successfully loaded {len(df)} connections!")
-                        
-                        # Display metrics
-                        metric_col1, metric_col2, metric_col3 = st.columns(3)
-                        with metric_col1:
-                            st.metric("Total Connections", len(df))
-                        with metric_col2:
-                            st.metric("Network Nodes", "Coming Soon")
-                        with metric_col3:
-                            st.metric("Introduction Paths", "Coming Soon")
-                        
-                        st.markdown("### 📊 Your Connections")
-                        st.dataframe(df, use_container_width=True, height=400)
-                        
-                        os.remove(temp_path)
+                        # Find the file matching the selected user_id
+                        selected_file = None
+                        for file in uploaded_files:
+                            filename = file.name
+                            if filename.startswith(user_id):
+                                selected_file = file
+                                break
+                        if not selected_file:
+                            st.error("Could not find a file for the selected identifier.")
+                        else:
+                            temp_path = os.path.join("temp_uploaded.csv")
+                            with open(temp_path, "wb") as f:
+                                f.write(selected_file.getbuffer())
+                            df = load_connections(temp_path, user_id)
+
+                            st.success(f"✅ Successfully loaded {len(df)} connections for {user_id}!")
+
+                            # Display metrics
+                            metric_col1, metric_col2, metric_col3 = st.columns(3)
+                            with metric_col1:
+                                st.metric("Total Connections", len(df))
+                            with metric_col2:
+                                st.metric("Network Nodes", "Coming Soon")
+                            with metric_col3:
+                                st.metric("Introduction Paths", "Coming Soon")
+
+                            st.markdown("### 📊 Your Connections")
+                            st.dataframe(df, use_container_width=True, height=400)
+
+                            os.remove(temp_path)
                     except Exception as e:
                         st.error(f"❌ Error loading CSV: {e}")
                         if os.path.exists(temp_path):
@@ -222,6 +248,16 @@ def main():
                 unsafe_allow_html=True
             )
 
+        with st.expander("ℹ️ How to export your LinkedIn connections"):
+            st.markdown("""
+            1. Go to LinkedIn Settings & Privacy
+            2. Click on "Data Privacy"
+            3. Select "Get a copy of your data"
+            4. Choose "Connections" and download
+            5. **Only upload the minimum data needed for analysis:** first name, last name, company, and position. Do not include contact details.
+            6. Upload the CSV file to StrongTies
+            """)
+
         with st.expander("👥 Who Should Use StrongTies?", expanded=False):
             st.markdown(
                 """
@@ -248,16 +284,6 @@ def main():
                 """,
                 unsafe_allow_html=True
             )
-        
-        with st.expander("ℹ️ How to export your LinkedIn connections"):
-            st.markdown("""
-            1. Go to LinkedIn Settings & Privacy
-            2. Click on "Data Privacy"
-            3. Select "Get a copy of your data"
-            4. Choose "Connections" and download
-            5. **Only upload the minimum data needed for analysis:** first name, last name, company, and position. Do not include contact details.
-            6. Upload the CSV file here
-            """)
         
         with st.expander("🔐 Privacy & Security"):
             st.markdown("""
