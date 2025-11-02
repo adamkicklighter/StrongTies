@@ -21,26 +21,28 @@ def test_is_safe_path(tmp_path):
 def test_load_connections_valid(tmp_path):
     csv_file = tmp_path / "connections.csv"
     csv_file.write_text("Name, Email\nAlice, alice@example.com\nBob, bob@example.com\nAlice, alice@example.com")
-    df = load_connections(str(csv_file), str(tmp_path))
-    assert set(df.columns) == {"name", "email"}
+    df = load_connections(str(csv_file), "testuser", str(tmp_path))  # Add user_id argument
+    assert set(df.columns) == {"name", "email", "user_id"}  # user_id column expected
     assert len(df) == 2  # duplicates dropped
     assert "alice@example.com" in df["email"].values
+    assert all(df["user_id"] == "testuser")
 
 def test_load_connections_invalid_path(tmp_path):
     csv_file = tmp_path.parent / "unsafe.csv"
     csv_file.write_text("Name, Email\nCharlie, charlie@example.com")
     with pytest.raises(ValueError):
-        load_connections(str(csv_file), str(tmp_path))
+        load_connections(str(csv_file), "testuser", str(tmp_path))  # Add user_id argument
 
 def test_load_all_connections(tmp_path):
-    csv1 = tmp_path / "a.csv"
-    csv2 = tmp_path / "b.csv"
+    csv1 = tmp_path / "alice_connections.csv"
+    csv2 = tmp_path / "bob_connections.csv"
     csv1.write_text("Name, Email\nAlice, alice@example.com\nBob, bob@example.com")
     csv2.write_text("Name, Email\nBob, bob@example.com\nCarol, carol@example.com")
     df = load_all_connections(str(tmp_path))
-    assert set(df.columns) == {"name", "email"}
+    assert set(df.columns) == {"name", "email", "user_id"}  # user_id column expected
     assert len(df) == 3  # Bob is duplicate
     assert sorted(df["name"].values) == ["Alice", "Bob", "Carol"]
+    assert set(df["user_id"].values) == {"alice", "bob"}  # user_id inferred from filename
 
 def test_load_all_connections_empty(tmp_path):
     df = load_all_connections(str(tmp_path))

@@ -6,7 +6,8 @@ data_loader.py
 Loads and preprocesses LinkedIn-style connection CSVs for StrongTies.
 
 Functions:
-    load_connections(csv_path: str, base_dir: str = None) -> pd.DataFrame
+    is_safe_path(base_dir: str, path: str) -> bool
+    load_connections(csv_path: str, user_id: str, base_dir: str = None) -> pd.DataFrame
     load_all_connections(data_dir: str) -> pd.DataFrame
 """
 
@@ -16,37 +17,11 @@ import pandas as pd
 
 def is_safe_path(base_dir: str, path: str) -> bool:
     """
-    Ensure the given path is within the base directory.
+    Ensure the given path is within the base directory to prevent directory traversal attacks.
     """
     abs_base = os.path.abspath(base_dir)
     abs_path = os.path.abspath(path)
     return abs_path.startswith(abs_base)
-
-def load_connections(csv_path: str, base_dir: Optional[str] = None) -> pd.DataFrame:
-    """
-    Load a single connections CSV file, with path validation.
-
-    Parameters
-    ----------
-    csv_path : str
-        Path to the CSV file.
-    base_dir : Optional[str]
-        Base directory to validate the path against.
-
-    Returns
-    -------
-    pd.DataFrame
-        DataFrame containing the connections data.
-    """
-    if base_dir and not is_safe_path(base_dir, csv_path):
-        raise ValueError(f"Unsafe path detected: {csv_path}")
-    df = pd.read_csv(csv_path, skipinitialspace=True)  # <-- Fix 1
-    # Basic cleaning: drop duplicates, standardize column names
-    df = df.drop_duplicates()
-    df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
-    if "email" in df.columns:
-        df["email"] = df["email"].str.strip()  # <-- Fix 2
-    return df
 
 def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None) -> pd.DataFrame:
     """
@@ -73,7 +48,7 @@ def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None
     df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
     if "email" in df.columns:
         df["email"] = df["email"].str.strip()
-    df["user_id"] = user_id  # <-- Add user_id column
+    df["user_id"] = user_id
     return df
 
 def load_all_connections(data_dir: str) -> pd.DataFrame:
