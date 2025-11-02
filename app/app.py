@@ -195,31 +195,59 @@ def main():
                             os.remove(temp_path)
     
     with col2:
-        # Info Cards
-        st.markdown(
-            """
-            <div class="info-card">
-                <h3>🎯 How It Works</h3>
-                <p><strong>1.</strong> Upload your LinkedIn connections CSV</p>
-                <p><strong>2.</strong> We build your professional social graph</p>
-                <p><strong>3.</strong> Discover optimal introduction paths</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        st.markdown(
-            """
-            <div class="feature-list">
-                <div style="font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">✨ Features</div>
-                <div class="feature-item">🔒 <strong>100% Private</strong> - All data stays local</div>
-                <div class="feature-item">🎯 <strong>Smart Analysis</strong> - Find the best paths</div>
-                <div class="feature-item">📊 <strong>Visual Insights</strong> - Coming soon</div>
-                <div class="feature-item">📈 <strong>Network Metrics</strong> - Coming soon</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        with st.expander("🎯 How It Works", expanded=True):
+            st.markdown(
+                """
+                <div class="info-card">
+                    <h3>🎯 How It Works</h3>
+                    <p><strong>1.</strong> Upload your LinkedIn connections CSV</p>
+                    <p><strong>2.</strong> We build your professional social graph</p>
+                    <p><strong>3.</strong> Discover optimal introduction paths</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with st.expander("✨ Features", expanded=False):
+            st.markdown(
+                """
+                <div class="feature-list">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">✨ Features</div>
+                    <div class="feature-item">🔒 <strong>100% Private</strong> - All data stays local</div>
+                    <div class="feature-item">🎯 <strong>Smart Analysis</strong> - Find the best paths</div>
+                    <div class="feature-item">📊 <strong>Visual Insights</strong> - Coming soon</div>
+                    <div class="feature-item">📈 <strong>Network Metrics</strong> - Coming soon</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with st.expander("👥 Who Should Use StrongTies?", expanded=False):
+            st.markdown(
+                """
+                <div class="info-card" style="background: linear-gradient(135deg, #4299e1 0%, #48bb78 100%);">
+                    <h3>👥 Who Should Use StrongTies?</h3>
+                    <p><strong>•</strong> Small, trusted groups (2–5 people) who know each other well</p>
+                    <p><strong>•</strong> Willing to help and make meaningful introductions</p>
+                    <p><strong>•</strong> Not for large, anonymous, or commercial use</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with st.expander("🛡️ Ethical Principles", expanded=False):
+            st.markdown(
+                """
+                <div class="info-card" style="background: linear-gradient(135deg, #ed8936 0%, #f6e05e 100%);">
+                    <h3>🛡️ Ethical Principles</h3>
+                    <p><strong>Privacy First:</strong> Your data stays local—never uploaded or shared externally.</p>
+                    <p><strong>Reciprocity:</strong> Built for mutual support, not for exploiting networks.</p>
+                    <p><strong>Transparency:</strong> All analysis is explainable and inspectable.</p>
+                    <p><strong>Noncommercial Use:</strong> Free for personal and group use only.</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
         
         with st.expander("ℹ️ How to export your LinkedIn connections"):
             st.markdown("""
@@ -239,6 +267,18 @@ def main():
             - **Your data, your control**: Delete anytime
             - **Important:** Please do **not** upload contact details (such as emails or phone numbers) for your connections. Only upload the minimum data needed for analysis.
             """)
+
+        # --- New: Link to Full User Guide ---
+        st.markdown(
+            """
+            <div style="margin-top: 1rem; text-align: center;">
+                <a href="https://github.com/adamkicklighter/StrongTies/blob/main/user-guide.md" target="_blank" style="color: #4299e1; font-weight: 600;">
+                    📖 Read the full StrongTies User Guide
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # Footer
     st.divider()
