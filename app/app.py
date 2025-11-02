@@ -1,66 +1,250 @@
 import streamlit as st
+import pandas as pd
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from data_loader import load_connections
 
 st.set_page_config(
     page_title="StrongTies: Professional Social Graph",
     layout="wide",
-    page_icon=":handshake:"
+    page_icon="🤝"
 )
 
 def main():
     st.markdown(
         """
         <style>
-        .center-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 70vh;
+        /* Hide Streamlit branding */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        
+        /* Main container styling */
+        .block-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            max-width: 1200px;
         }
+        
+        /* Typography */
         .main-title {
-            font-size: 3em;
+            font-size: 3rem;
             font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 0.2em;
-            text-align: center;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
         }
+        
         .subtitle {
-            font-size: 1.3em;
-            color: #34495e;
-            margin-bottom: 1em;
-            text-align: center;
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.6;
         }
-        .info-box {
-            background-color: #f4f6f8;
+        
+        /* Card styling */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .info-card h3 {
+            color: white;
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+        
+        .info-card p {
+            margin: 0.5rem 0;
+            opacity: 0.95;
+        }
+        
+        /* Feature list styling */
+        .feature-list {
+            background: #f7fafc;
             border-radius: 8px;
-            padding: 1em 2em;
-            margin-bottom: 1em;
-            border-left: 6px solid #2980b9;
-            text-align: left;
-            max-width: 500px;
+            padding: 1.5rem;
+            border-left: 4px solid #4299e1;
+        }
+        
+        .feature-item {
+            padding: 0.5rem 0;
+            color: #2d3748;
+        }
+        
+        /* File uploader styling */
+        .stFileUploader {
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f7fafc;
+        }
+        
+        /* Button styling */
+        .stButton>button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 2rem;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .stButton>button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+        
+        /* Input styling */
+        .stTextInput>div>div>input {
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Success/Error messages */
+        .stSuccess, .stError {
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        /* Dataframe styling */
+        .dataframe {
+            border-radius: 8px;
+            overflow: hidden;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
+    # Header Section
+    st.markdown('<div class="main-title">🤝 StrongTies</div>', unsafe_allow_html=True)
     st.markdown(
-        """
-        <div class="center-container">
-            <div class="main-title">StrongTies</div>
-            <div class="subtitle">
-                Analyze your professional network and discover high-potential introduction paths.<br>
-                <span style="font-size:0.95em;">All processing is local; your data stays on your device.</span>
+        '<div class="subtitle">'
+        'Analyze your professional network and discover high-potential introduction paths. '
+        'All processing happens locally—your data never leaves your device.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+    
+    st.divider()
+
+    # Main Content
+    col1, col2 = st.columns([3, 2], gap="large")
+    
+    with col1:
+        st.markdown("### 📁 Upload Your Data")
+        st.markdown("Get started by uploading your LinkedIn connections CSV file.")
+        
+        uploaded_file = st.file_uploader(
+            "Choose your LinkedIn connections CSV",
+            type="csv",
+            help="Export your connections from LinkedIn and upload the CSV file here"
+        )
+        
+        user_id = st.text_input(
+            "Your Identifier",
+            value="",
+            placeholder="Enter your name or email",
+            help="This helps identify you in the network graph"
+        )
+        
+        if uploaded_file is not None and user_id:
+            st.markdown("")  # spacing
+            if st.button("🚀 Analyze Network", use_container_width=True):
+                with st.spinner("Processing your network..."):
+                    try:
+                        temp_path = os.path.join("temp_uploaded.csv")
+                        with open(temp_path, "wb") as f:
+                            f.write(uploaded_file.getbuffer())
+                        df = load_connections(temp_path, user_id)
+                        
+                        st.success(f"✅ Successfully loaded {len(df)} connections!")
+                        
+                        # Display metrics
+                        metric_col1, metric_col2, metric_col3 = st.columns(3)
+                        with metric_col1:
+                            st.metric("Total Connections", len(df))
+                        with metric_col2:
+                            st.metric("Network Nodes", "Coming Soon")
+                        with metric_col3:
+                            st.metric("Introduction Paths", "Coming Soon")
+                        
+                        st.markdown("### 📊 Your Connections")
+                        st.dataframe(df, use_container_width=True, height=400)
+                        
+                        os.remove(temp_path)
+                    except Exception as e:
+                        st.error(f"❌ Error loading CSV: {e}")
+                        if os.path.exists(temp_path):
+                            os.remove(temp_path)
+    
+    with col2:
+        # Info Cards
+        st.markdown(
+            """
+            <div class="info-card">
+                <h3>🎯 How It Works</h3>
+                <p><strong>1.</strong> Upload your LinkedIn connections CSV</p>
+                <p><strong>2.</strong> We build your professional social graph</p>
+                <p><strong>3.</strong> Discover optimal introduction paths</p>
             </div>
-            <div class="info-box">
-                <b>Step 1:</b> Upload your LinkedIn-style CSV file to begin.<br>
-                <b>Step 2:</b> Explore your professional social graph (coming soon).
+            """,
+            unsafe_allow_html=True
+        )
+        
+        st.markdown(
+            """
+            <div class="feature-list">
+                <div style="font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">✨ Features</div>
+                <div class="feature-item">🔒 <strong>100% Private</strong> - All data stays local</div>
+                <div class="feature-item">🎯 <strong>Smart Analysis</strong> - Find the best paths</div>
+                <div class="feature-item">📊 <strong>Visual Insights</strong> - Coming soon</div>
+                <div class="feature-item">📈 <strong>Network Metrics</strong> - Coming soon</div>
             </div>
-            <div class="info-box">
-                <b>Note:</b> Graph analysis features will be available soon.
-            </div>
-        </div>
-        """,
+            """,
+            unsafe_allow_html=True
+        )
+        
+        with st.expander("ℹ️ How to export your LinkedIn connections"):
+            st.markdown("""
+            1. Go to LinkedIn Settings & Privacy
+            2. Click on "Data Privacy"
+            3. Select "Get a copy of your data"
+            4. Choose "Connections" and download
+            5. Upload the CSV file here
+            """)
+        
+        with st.expander("🔐 Privacy & Security"):
+            st.markdown("""
+            - **No data upload**: Everything processes locally
+            - **No tracking**: We don't collect any analytics
+            - **Open source**: Review the code anytime
+            - **Your data, your control**: Delete anytime
+            """)
+
+    # Footer
+    st.divider()
+    st.markdown(
+        '<div style="text-align: center; color: #718096; font-size: 0.9rem; padding: 1rem 0;">'
+        'StrongTies • Licensed under Polyform Noncommercial 1.0.0 • '
+        '<a href="https://github.com/adamkicklighter/StrongTies" style="color: #4299e1;">View on GitHub</a>'
+        '</div>',
         unsafe_allow_html=True
     )
 
