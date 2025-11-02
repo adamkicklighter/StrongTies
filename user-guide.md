@@ -2,7 +2,7 @@
 
 ## Purpose and Intended Use
 
-**StrongTies** is designed to help small, trusted groups of professionals support each other in their career journeys. The tool is built for *real* connections—people who know each other well, are willing to help, and want to make meaningful introductions to high-potential contacts. It is **not** intended for large, anonymous networks or for "connection farming."
+**StrongTies** is designed to help small, trusted groups of professionals support each other in their career journeys. The tool is built for real connections — people who know each other well, are willing to help, and want to make meaningful introductions to high-potential contacts. It is **not** intended for large, weakly connected networks.
 
 StrongTies works best when used by groups of two or more first-degree connections who:
 
