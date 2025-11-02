@@ -6,8 +6,8 @@ strongties/
 ├── requirements.txt
 │
 ├── data/
-│   ├── sample_connections_1.csv
-│   ├── sample_connections_2.csv
+│   ├── alice_connections.csv
+│   ├── bob_connections.csv
 │   └── README.md
 │
 ├── notebooks/
@@ -27,6 +27,8 @@ strongties/
 │   ├── privacy_sanitizer.py
 │   └── utils.py
 │   └── generate_sample_connections.py
+│
+├── app/
 │
 ├── results/ -- Results are not tracked (.gitignore)
 │   ├── figures/
