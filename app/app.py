@@ -137,7 +137,7 @@ def main():
     st.markdown(
         '<div class="subtitle">'
         'Analyze your professional network and discover high-potential introduction paths. '
-        'All processing happens locally—your data never leaves your device.'
+        'All processing happens locally — your data never leaves your device.'
         '</div>',
         unsafe_allow_html=True
     )
@@ -227,7 +227,8 @@ def main():
             2. Click on "Data Privacy"
             3. Select "Get a copy of your data"
             4. Choose "Connections" and download
-            5. Upload the CSV file here
+            5. **Only upload the minimum data needed for analysis:** first name, last name, company, and position. Do not include contact details.
+            6. Upload the CSV file here
             """)
         
         with st.expander("🔐 Privacy & Security"):
@@ -236,6 +237,7 @@ def main():
             - **No tracking**: We don't collect any analytics
             - **Open source**: Review the code anytime
             - **Your data, your control**: Delete anytime
+            - **Important:** Please do **not** upload contact details (such as emails or phone numbers) for your connections. Only upload the minimum data needed for analysis.
             """)
 
     # Footer
