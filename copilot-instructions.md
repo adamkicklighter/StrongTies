@@ -57,6 +57,7 @@ These are the libraries and tools we primarily use and test against. When possib
 - **matplotlib** for simple visualizations (or **plotly** when interactive plots are warranted)  
 - **faker** for generating synthetic data  
 - **pytest** for testing
+- **streamlit** for the web app interface
 
 ### Secondary / Acceptable alternatives
 Alternative open-source libraries that are acceptable when they meaningfully improve clarity, performance, or developer experience:
