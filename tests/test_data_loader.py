@@ -126,4 +126,4 @@ def test_load_connections_logging(tmp_path, caplog):
     with caplog.at_level("ERROR"):
         with pytest.raises(ValueError):
             load_connections(str(csv_file), "testuser", str(tmp_path))
-        assert any("CSV columns invalid" in m for m in caplog.messages)
+        assert any("CSV missing required columns" in m for m in caplog.messages)

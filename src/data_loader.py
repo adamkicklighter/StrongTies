@@ -60,6 +60,11 @@ def load_connections(
         logger.error(f"Unsafe path detected: {csv_path}")
         raise ValueError(f"Unsafe path detected: {csv_path}")
     df = pd.read_csv(csv_path, skipinitialspace=True)
+    required_columns = ["First Name", "Last Name", "Company", "Position"]
+    missing = [col for col in required_columns if col not in df.columns]
+    if missing:
+        logger.error(f"CSV missing required columns: {missing}")
+        raise ValueError(f"CSV missing required columns: {missing}")
     if not validate_csv_columns(df.columns.tolist()):
         logger.error(f"CSV columns invalid: {df.columns.tolist()}")
         raise ValueError(f"CSV columns invalid: {df.columns.tolist()}")
@@ -72,7 +77,9 @@ def load_connections(
         df["Position"] = df["Position"].apply(standardize_position_title)
     # Concatenate First Name and Last Name into a single 'Name' column
     if "First Name" in df.columns and "Last Name" in df.columns:
-        df["Name"] = df["First Name"].str.strip() + " " + df["Last Name"].str.strip()
+        df["Name"] = (
+            df["First Name"].str.strip() + " " + df["Last Name"].str.strip()
+        ).str.lower()
         df = df.drop(columns=["First Name", "Last Name"])
     # Reorder columns: Name, Company, Position, user_id (if present)
     desired_order = [col for col in ["Name", "Company", "Position", "user_id"] if col in df.columns]
@@ -121,7 +128,9 @@ def load_all_connections(
         dfs.append(load_connections(f, user_id, abs_data_dir, hash_ids=hash_ids, obfuscate_names=obfuscate_names))
     if dfs:
         combined_df = pd.concat(dfs, ignore_index=True)
-        combined_df = combined_df.drop_duplicates()
+        # Drop duplicates based on connection fields only
+        dedup_cols = [col for col in ["name", "company", "position"] if col in combined_df.columns]
+        combined_df = combined_df.drop_duplicates(subset=dedup_cols)
         return combined_df
     else:
         return pd.DataFrame()
