@@ -24,7 +24,6 @@ Traditional networking advice often leaves you asking: "Who should I reach out t
 4. **Insight Output** – You receive a ranked list of high-potential connections and optional visualizations of your network.  
 
 > _All processing happens locally or via open-source code; no sensitive data is shared._
-> _https://www.linkedin.com/help/linkedin/answer/a566336/export-connections-from-linkedin for instructions to export connection data._
 
 ---
 
