@@ -2,7 +2,7 @@
   "intention": "StrongTies analyzes user-provided LinkedIn-style CSVs to build a professional social graph and identify high-potential introduction paths.",
   "privacy": "Process all data locally; do not upload or scrape external data sources.",
   "preferred_technologies": {
-    "primary": ["python", "pandas", "networkx", "matplotlib", "pytest", "faker"],
+    "primary": ["python", "pandas", "networkx", "matplotlib", "pytest", "faker", "streamlit"],
     "secondary": [
       "plotly", "dash", "altair", "igraph", "polars", "numpy", "scipy"
     ],
