@@ -52,6 +52,8 @@ Traditional networking advice often leaves you asking: "Who should I reach out t
 
 For detailed instructions, ethical principles, and best practices, please see the [StrongTies User Guide](./user-guide.md).
 
+> **New:** For actionable strategies on building authentic, effective professional relationships, see [Networking Principles](./networking_principles.md). StrongTies is designed to support these principles.
+
 ---
 
 ## Get Involved

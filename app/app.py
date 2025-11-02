@@ -306,6 +306,18 @@ def main():
             unsafe_allow_html=True
         )
 
+        # --- New: Link to Networking Principles ---
+        st.markdown(
+            """
+            <div style="margin-top: 0.5rem; text-align: center;">
+                <a href="https://github.com/adamkicklighter/StrongTies/blob/main/networking_principles.md" target="_blank" style="color: #764ba2; font-weight: 600;">
+                    🧭 Reference: Networking Principles for Authentic Connections
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
     # Footer
     st.divider()
     st.markdown(
