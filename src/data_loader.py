@@ -48,6 +48,14 @@ def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None
     df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
     if "email" in df.columns:
         df["email"] = df["email"].str.strip()
+    # Concatenate first_name and last_name into a single 'name' column
+    if "first_name" in df.columns and "last_name" in df.columns:
+        df["name"] = df["first_name"].str.strip() + " " + df["last_name"].str.strip()
+        df = df.drop(columns=["first_name", "last_name"])
+    # Reorder columns: name, company, position, email, user_id (if present)
+    desired_order = [col for col in ["name", "company", "position", "email", "user_id"] if col in df.columns]
+    other_cols = [col for col in df.columns if col not in desired_order]
+    df = df[desired_order + other_cols]
     df["user_id"] = user_id
     return df
 
@@ -87,5 +95,6 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
 
 # Example usage (uncomment for script use):
 # if __name__ == "__main__":
-#     df = load_all_connections("../data")
+#     df = load_all_connections("../StrongTies/data")
 #     print(df.head())
+#     print(df.tail())
