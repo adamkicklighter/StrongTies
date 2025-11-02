@@ -17,11 +17,12 @@ Traditional networking advice often leaves you asking: "Who should I reach out t
 ---
 
 ## How It Works
-1. **Export Connection Data** – Export your LinkedIn connections, providing name, company, and position fields only (https://www.linkedin.com/help/linkedin/answer/a566336/export-connections-from-linkedin).  
+1. **Export Connection Data** – Export your LinkedIn connections, providing name, company, and position fields only.  
 2. **Graph Construction** – StrongTies builds a network graph: people are vertices; relationships are edges.  
 3. **Analysis Metrics** – The tool calculates centrality measures (e.g., betweenness, closeness) and community structure to detect strong introduction paths.  
 4. **Insight Output** – You receive a ranked list of high-potential connections and optional visualizations of your network.  
 > _All processing happens locally or via open-source code; no sensitive data is shared._
+> _https://www.linkedin.com/help/linkedin/answer/a566336/export-connections-from-linkedin for instructions to export connection data._
 
 ---
 
