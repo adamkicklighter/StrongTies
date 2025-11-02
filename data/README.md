@@ -18,6 +18,10 @@ This folder contains sample connection data for the StrongTies project.
 
 ## Regenerating Sample Data
 
+> **Note:**  
+> Example `.csv` files are intentionally **not tracked in version control** (see `.gitignore`).  
+> To view or use the sample CSVs, you must generate them locally.
+
 To create or extend sample connection files, run:
 
 ```bash
