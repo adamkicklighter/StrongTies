@@ -14,6 +14,8 @@ Functions:
 import os
 from typing import List, Optional
 import pandas as pd
+from privacy_sanitizer import sanitize_csv
+from utils import clean_company_name, standardize_position_title
 
 def is_safe_path(base_dir: str, path: str) -> bool:
     """
@@ -25,7 +27,7 @@ def is_safe_path(base_dir: str, path: str) -> bool:
 
 def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None) -> pd.DataFrame:
     """
-    Load a single connections CSV file, with path validation and user tagging.
+    Load a single connections CSV file, with path validation, privacy sanitization, and user tagging.
 
     Parameters
     ----------
@@ -39,21 +41,24 @@ def load_connections(csv_path: str, user_id: str, base_dir: Optional[str] = None
     Returns
     -------
     pd.DataFrame
-        DataFrame containing the connections data, with a user_id column.
+        DataFrame containing the sanitized connections data, with a user_id column.
     """
     if base_dir and not is_safe_path(base_dir, csv_path):
         raise ValueError(f"Unsafe path detected: {csv_path}")
     df = pd.read_csv(csv_path, skipinitialspace=True)
+    df = sanitize_csv(df)  # Ensure privacy and allowed columns
     df = df.drop_duplicates()
-    df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
-    if "email" in df.columns:
-        df["email"] = df["email"].str.strip()
-    # Concatenate first_name and last_name into a single 'name' column
-    if "first_name" in df.columns and "last_name" in df.columns:
-        df["name"] = df["first_name"].str.strip() + " " + df["last_name"].str.strip()
-        df = df.drop(columns=["first_name", "last_name"])
-    # Reorder columns: name, company, position, email, user_id (if present)
-    desired_order = [col for col in ["name", "company", "position", "email", "user_id"] if col in df.columns]
+    # Standardize company and position columns
+    if "Company" in df.columns:
+        df["Company"] = df["Company"].apply(clean_company_name)
+    if "Position" in df.columns:
+        df["Position"] = df["Position"].apply(standardize_position_title)
+    # Concatenate First Name and Last Name into a single 'Name' column
+    if "First Name" in df.columns and "Last Name" in df.columns:
+        df["Name"] = df["First Name"].str.strip() + " " + df["Last Name"].str.strip()
+        df = df.drop(columns=["First Name", "Last Name"])
+    # Reorder columns: Name, Company, Position, user_id (if present)
+    desired_order = [col for col in ["Name", "Company", "Position", "user_id"] if col in df.columns]
     other_cols = [col for col in df.columns if col not in desired_order]
     df = df[desired_order + other_cols]
     df["user_id"] = user_id
@@ -94,7 +99,7 @@ def load_all_connections(data_dir: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 # Example usage (uncomment for script use):
-# if __name__ == "__main__":
-#     df = load_all_connections("../StrongTies/data")
-#     print(df.head())
-#     print(df.tail())
+if __name__ == "__main__":
+    df = load_all_connections("../StrongTies/data")
+    print(df.head())
+    print(df.tail())
