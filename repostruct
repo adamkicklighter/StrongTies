@@ -11,10 +11,9 @@ strongties/
 │   └── README.md
 │
 ├── notebooks/
-│   ├── 01_data_cleaning.ipynb
-│   ├── 02_graph_construction.ipynb
-│   ├── 03_network_analysis.ipynb
-│   ├── 04_visualization.ipynb
+│   ├── 01_graph_construction.ipynb
+│   ├── 02_network_analysis.ipynb
+│   ├── 03_visualization.ipynb
 │   └── README.md
 │
 ├── src/
