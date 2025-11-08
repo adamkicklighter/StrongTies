@@ -10,10 +10,10 @@ strongties/
 │   ├── bob_connections.csv
 │   └── README.md
 │
-├── notebooks/
-│   ├── 01_graph_construction.ipynb
-│   ├── 02_network_analysis.ipynb
-│   ├── 03_visualization.ipynb
+├── scripts/
+│   ├── graph_construction.py
+│   ├── network_analysis.py
+│   ├── visualization_demo.py
 │   └── README.md
 │
 ├── src/
