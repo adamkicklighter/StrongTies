@@ -14,8 +14,8 @@ Functions:
 import os
 from typing import List, Optional
 import pandas as pd
-from privacy_sanitizer import sanitize_csv, validate_csv_columns
-from utils import clean_company_name, standardize_position_title, ensure_dir
+from src.privacy_sanitizer import sanitize_csv, validate_csv_columns
+from src.utils import clean_company_name, standardize_position_title, ensure_dir
 import logging
 
 logger = logging.getLogger("strongties")

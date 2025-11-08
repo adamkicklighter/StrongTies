@@ -2,12 +2,12 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import os
 import pandas as pd
 import pytest
-from data_loader import is_safe_path, load_connections, load_all_connections
+from src.data_loader import is_safe_path, load_connections, load_all_connections
 
 def test_is_safe_path(tmp_path):
     base_dir = tmp_path
@@ -72,7 +72,7 @@ def test_load_connections_hash_and_obfuscate(tmp_path, monkeypatch):
         called['hash_ids'] = hash_ids
         called['obfuscate_names'] = obfuscate_names
         return df
-    monkeypatch.setattr("data_loader.sanitize_csv", mock_sanitize_csv)
+    monkeypatch.setattr("src.data_loader.sanitize_csv", mock_sanitize_csv)
     csv_file = tmp_path / "connections.csv"
     csv_file.write_text(
         "First Name,Last Name,Company,Position\n"
@@ -84,8 +84,8 @@ def test_load_connections_hash_and_obfuscate(tmp_path, monkeypatch):
 
 def test_load_connections_standardization(tmp_path, monkeypatch):
     # Mock company and position cleaners
-    monkeypatch.setattr("data_loader.clean_company_name", lambda x: "StandardCo")
-    monkeypatch.setattr("data_loader.standardize_position_title", lambda x: "StandardTitle")
+    monkeypatch.setattr("src.data_loader.clean_company_name", lambda x: "StandardCo")
+    monkeypatch.setattr("src.data_loader.standardize_position_title", lambda x: "StandardTitle")
     csv_file = tmp_path / "connections.csv"
     csv_file.write_text(
         "First Name,Last Name,Company,Position\n"
