@@ -1,6 +1,6 @@
 # Data Directory
 
-This folder contains sample connection data for the StrongTies project.
+This folder contains sample connection data and targeting preferences for the StrongTies project.
 
 ## Contents
 
@@ -8,6 +8,16 @@ This folder contains sample connection data for the StrongTies project.
 - `bob_connections.csv`  
   These files are **synthetic datasets** generated locally using `src/generate_sample_connections.py`.  
   No real user data or external sources are included.
+
+- `targets.json`  
+  Specifies **target companies and roles** for network analysis and graph construction.  
+  Example format:
+  ```json
+  {
+    "companies": ["Acme Corp", "Globex", "Initech"],
+    "roles": ["Product Manager", "Data Scientist", "VP Engineering"]
+  }
+  ```
 
 ## Privacy & Usage
 
@@ -40,3 +50,7 @@ Each CSV contains columns such as:
 - (other relevant fields as defined in `generate_sample_connections.py`)
 
 See the script or open a sample CSV for details.
+
+## Target Preferences Format
+
+See `targets.json` for specifying companies and roles to focus analysis and suggestions.

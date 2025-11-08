@@ -6,6 +6,7 @@ strongties/
 ├── requirements.txt
 │
 ├── data/
+│   ├── targets.json
 │   ├── alice_connections.csv
 │   ├── bob_connections.csv
 │   └── README.md

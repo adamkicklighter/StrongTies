@@ -1,0 +1,12 @@
+{
+  "companies": [
+    "Acme Corp",
+    "Globex",
+    "Initech"
+  ],
+  "roles": [
+    "Product Manager",
+    "Data Scientist",
+    "VP Engineering"
+  ]
+}

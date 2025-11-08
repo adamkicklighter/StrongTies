@@ -2,16 +2,16 @@
 
 import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import argparse
 import pandas as pd
 import networkx as nx
-
-# Add the project root to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.target_preferences import TargetPreferences
 
 from src.network_metrics import compute_basic_metrics, get_top_connectors, detect_communities
 
-def main(graph_path: str, output_dir: str) -> None:
+def main(graph_path: str, output_dir: str, targets_path: str = None) -> None:
     """
     Analyze a professional social network graph and output metrics, top connectors, and community assignments.
 
@@ -21,6 +21,8 @@ def main(graph_path: str, output_dir: str) -> None:
         Path to the input GraphML file.
     output_dir : str
         Directory to save output reports.
+    targets_path : str
+        Path to JSON file with target companies and roles.
 
     Returns
     -------
@@ -33,6 +35,14 @@ def main(graph_path: str, output_dir: str) -> None:
 
     # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
+
+    # Load target preferences if provided
+    target_prefs = None
+    if targets_path and os.path.exists(targets_path):
+        import json
+        with open(targets_path, "r") as f:
+            prefs = json.load(f)
+        target_prefs = TargetPreferences(prefs.get("companies", []), prefs.get("roles", []))
 
     # Compute basic metrics
     print("\nComputing basic network metrics...")
@@ -80,6 +90,38 @@ def main(graph_path: str, output_dir: str) -> None:
     for comm_id, members in sorted(communities.items(), key=lambda x: len(x[1]), reverse=True)[:5]:
         print(f"  Community {comm_id}: {len(members)} members")
 
+    # Report target matches
+    if target_prefs:
+        print("\nConnections matching target companies/roles:")
+        target_nodes = []
+        for node, data in G.nodes(data=True):
+            if target_prefs.matches(data):
+                target_nodes.append(node)
+        if target_nodes:
+            print(f"  {len(target_nodes)} connections")
+            for node in target_nodes[:10]:
+                print(f"  {node} ({G.nodes[node].get('company', '')}, {G.nodes[node].get('role', '')})")
+
+    # Identify connectors to targets
+    if target_prefs:
+        print("\nRanking connectors by target relevance...")
+        connector_target_matches = []
+        for name, degree in top_connectors:
+            node_data = G.nodes[name]
+            matches_target = target_prefs.matches(node_data)
+            connector_target_matches.append({
+                "name": name,
+                "degree": degree,
+                "matches_target": matches_target,
+                "company": node_data.get("company", ""),
+                "role": node_data.get("role", "")
+            })
+        # Save connectors with target relevance
+        target_connectors_df = pd.DataFrame(connector_target_matches)
+        target_connectors_path = os.path.join(output_dir, "target_connectors.csv")
+        target_connectors_df.to_csv(target_connectors_path, index=False)
+        print(f"Connector relevance to targets saved to {target_connectors_path}")
+
     print(f"\nAnalysis complete. All results saved to {output_dir}")
 
 if __name__ == "__main__":
@@ -98,5 +140,11 @@ if __name__ == "__main__":
         default="results/reports",
         help="Directory for output reports"
     )
+    parser.add_argument(
+        "--targets",
+        type=str,
+        default=None,
+        help="Path to JSON file with target companies and roles"
+    )
     args = parser.parse_args()
-    main(args.graph, args.output_dir)
+    main(args.graph, args.output_dir, args.targets)
