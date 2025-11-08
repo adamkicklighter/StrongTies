@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Polyform-Noncommercial-1.0.0
+
 import sys
 import os
 import argparse
@@ -9,7 +11,21 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.data_loader import load_all_connections
 from src.graph_builder import build_connection_graph
 
-def main(data_dir, output_path):
+def main(data_dir: str, output_path: str) -> None:
+    """
+    Construct a professional social graph from user connection data and save as GraphML.
+
+    Parameters
+    ----------
+    data_dir : str
+        Directory containing connection CSV files.
+    output_path : str
+        Path to save the output GraphML file.
+
+    Returns
+    -------
+    None
+    """
     df = load_all_connections(data_dir)
     G = build_connection_graph(df, source_col="user_id", target_col="name")
     print(f"Graph has {G.number_of_nodes()} nodes and {G.number_of_edges()} edges.")
@@ -23,8 +39,20 @@ def main(data_dir, output_path):
     print(f"Graph saved to {output_path}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Construct and save a professional social graph.")
-    parser.add_argument("--data_dir", type=str, default="data", help="Directory with connection CSVs")
-    parser.add_argument("--output", type=str, default="results/figures/network.graphml", help="Output graph file")
+    parser = argparse.ArgumentParser(
+        description="Construct and save a professional social graph."
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        default="data",
+        help="Directory with connection CSVs"
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="results/figures/network.graphml",
+        help="Output graph file"
+    )
     args = parser.parse_args()
     main(args.data_dir, args.output)
